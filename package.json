@@ -16,10 +16,12 @@
     "update-webdriver": "webdriver-manager-update"
   },
   "dependencies": {
-    "angular": "^1.4.0-beta.6",
+    "angular": "^1.4.x",
+    "angular-animate": "^1.4.x",
+    "angular-aria": "^1.4.x",
     "bootstrap": "^3.3.4",
     "bootstrap-webpack": "^0.0.3",
-    "angular-material": "~0.9.7 "
+    "angular-material": "^0.9.7"
   },
   "devDependencies": {
     "css-loader": "^0.10.1",

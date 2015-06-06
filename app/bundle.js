@@ -46679,7 +46679,7 @@
 
 	        return $mdBottomSheet.show({
 	            parent: angular.element(document.getElementById('content')),
-	            templateUrl: 'contactSheet.html',
+	            templateUrl: './controllers/users/contactSheet.html',
 	            controller: [ '$mdBottomSheet', ContactPanelController],
 	            controllerAs: "cp",
 	            bindToController : true,
@@ -46702,7 +46702,7 @@
 	        }
 	    }
 
-	};
+	}
 
 	module.exports = UserController;
 
