@@ -4,6 +4,7 @@
 
 
 module.exports = angular.module('starterApp.services', [])
-    .service('userService', ['$q', require('./users/UserService')]);
+    .service('userService', ['$q', require('./users/UserService')])
+    .service('MessagingService', ['$q', require('./users/MessagingService')]);
 
 

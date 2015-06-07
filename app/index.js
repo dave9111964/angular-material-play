@@ -10,7 +10,7 @@
     angular
         .module('starterApp', ['ngMaterial',
             require('./services/services').name,
-            require('./controllers/controllers').name
+            require('./components/components').name
         ])
         .config(function($mdThemingProvider, $mdIconProvider){
             $mdIconProvider

@@ -1,23 +1,31 @@
 /**
- * Created by david on 6/5/15.
+ * Created by david on 6/6/15.
  */
- 'use strict';
 
-function UserController( userService, $mdSidenav, $mdBottomSheet, $log, $q) {
+'use strict';
+
+function mainContentCtrl(userService, MessagingService, $mdSidenav, $mdBottomSheet, $log, $q) {
     var self = this;
 
-    self.selected     = null;
-    self.users        = [ ];
-    self.selectUser   = selectUser;
-    self.toggleList   = toggleUsersList;
-    self.showContactOptions  = showContactOptions;
+    self.selected = null;
+    self.users = [];
+    //self.selectUser = selectUser;
+    self.toggleList = toggleUsersList;
+    self.showContactOptions = showContactOptions;
+
+
+    MessagingService.registerUserSelListener(userSelected);
 
     userService
         .loadAllUsers()
-        .then( function( users ) {
-            self.users    = [].concat(users);
+        .then(function (users) {
+            self.users = [].concat(users);
             self.selected = users[0];
         });
+
+    function userSelected(user){
+        self.selected = user;
+    }
 
     function toggleUsersList() {
         var pending = $mdBottomSheet.hide() || $q.when(true);
@@ -27,17 +35,12 @@ function UserController( userService, $mdSidenav, $mdBottomSheet, $log, $q) {
         });
     }
 
-    function selectUser ( user ) {
-        self.selected = angular.isNumber(user) ? self.users[user] : user;
-        self.toggleList();
-    }
-
     function showContactOptions($event) {
         var user = self.selected;
 
         return $mdBottomSheet.show({
             parent: angular.element(document.getElementById('content')),
-            templateUrl: './controllers/users/contactSheet.html',
+            template: require('./contactSheet.html'),
             controller: [ '$mdBottomSheet', ContactPanelController],
             controllerAs: "cp",
             bindToController : true,
@@ -62,4 +65,5 @@ function UserController( userService, $mdSidenav, $mdBottomSheet, $log, $q) {
 
 }
 
-module.exports = UserController;
+module.exports = mainContentCtrl;
+

@@ -56,7 +56,7 @@
 	    angular
 	        .module('starterApp', ['ngMaterial',
 	            __webpack_require__(15).name,
-	            __webpack_require__(17).name
+	            __webpack_require__(18).name
 	        ])
 	        .config(function($mdThemingProvider, $mdIconProvider){
 	            $mdIconProvider
@@ -46561,7 +46561,8 @@
 
 
 	module.exports = angular.module('starterApp.services', [])
-	    .service('userService', ['$q', __webpack_require__(16)]);
+	    .service('userService', ['$q', __webpack_require__(16)])
+	    .service('MessagingService', ['$q', __webpack_require__(17)]);
 
 
 
@@ -46629,10 +46630,26 @@
 	 * Created by david on 6/6/15.
 	 */
 
+	'use strict';
 
-	module.exports = angular.module('starterApp.controllers', [])
-	    .controller('UserController', ['userService', '$mdSidenav', '$mdBottomSheet', '$log', '$q', __webpack_require__(18)]);
+	function MessageingService(){
+	    var userSelectedListeners = [];
 
+	    return {
+	        registerUserSelListener: function(funcToListen){
+	            userSelectedListeners.push(funcToListen);
+	        },
+
+	        dispatchUserSelected: function(user) {
+	            userSelectedListeners.forEach(function (val) {
+	                val(user);
+	            });
+	        }
+	    };
+
+	}
+
+	module.exports = MessageingService;
 
 
 
@@ -46643,16 +46660,50 @@
 	/**
 	 * Created by david on 6/5/15.
 	 */
-	 'use strict';
 
-	function UserController( userService, $mdSidenav, $mdBottomSheet, $log, $q) {
+	module.exports = angular.module('starterApp.components', [])
+	    .directive('amSideNav', __webpack_require__(19))
+	    .directive('amMainContent', __webpack_require__(22));
+
+
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Created by david on 6/6/15.
+	 */
+
+	var sideNav = function(){
+	    //require('./sideNav.less');
+	    return {
+	        restrict: 'E',
+	        controller: __webpack_require__(20),
+	        controllerAs: 'sideNavCtrl',
+	        template: __webpack_require__(21)
+	    };
+	};
+
+	module.exports = sideNav;
+
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Created by david on 6/6/15.
+	 */
+
+	'use strict';
+
+	function SideNavCtrl( userService, MessagingService, $mdSidenav, $mdBottomSheet, $log, $q) {
 	    var self = this;
 
-	    self.selected     = null;
 	    self.users        = [ ];
-	    self.selectUser   = selectUser;
 	    self.toggleList   = toggleUsersList;
-	    self.showContactOptions  = showContactOptions;
+	    self.selectUser = selectUser;
 
 	    userService
 	        .loadAllUsers()
@@ -46660,6 +46711,12 @@
 	            self.users    = [].concat(users);
 	            self.selected = users[0];
 	        });
+
+	    function selectUser ( user ) {
+	        self.selected = angular.isNumber(user) ? self.users[user] : user;
+	        self.toggleList();
+	        MessagingService.dispatchUserSelected(self.selected);
+	    }
 
 	    function toggleUsersList() {
 	        var pending = $mdBottomSheet.hide() || $q.when(true);
@@ -46669,9 +46726,79 @@
 	        });
 	    }
 
-	    function selectUser ( user ) {
-	        self.selected = angular.isNumber(user) ? self.users[user] : user;
-	        self.toggleList();
+
+	}
+
+	module.exports = SideNavCtrl;
+
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = "<md-sidenav layout=\"column\" md-component-id=\"left\" md-is-locked-open=\"$mdMedia('gt-sm')\"\n            class=\"site-sidenav md-sidenav-left md-whiteframe-z2\">\n    <md-toolbar class=\"md-whiteframe-z1\">\n        <h1>Users</h1>\n    </md-toolbar>\n    <md-list>\n        <md-list-item ng-repeat=\"it in sideNavCtrl.users\">\n            <md-button ng-click=\"sideNavCtrl.selectUser(it)\" ng-class=\"{'selected' : it === sideNavCtrl.selected }\">\n                <md-icon md-svg-src=\"{{it.avatar}}\" class=\"avatar\"></md-icon>\n                {{it.name}}\n            </md-button>\n        </md-list-item>\n    </md-list>\n</md-sidenav>\n"
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Created by david on 6/6/15.
+	 */
+
+	var mainContent = function(){
+	    //require('./mainContent.less');
+	    return {
+	        restrict: 'E',
+	        controller: __webpack_require__(23),
+	        controllerAs: 'mainContentCtrl',
+	        template: __webpack_require__(25)
+	    };
+	};
+
+	module.exports = mainContent;
+
+
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Created by david on 6/6/15.
+	 */
+
+	'use strict';
+
+	function mainContentCtrl(userService, MessagingService, $mdSidenav, $mdBottomSheet, $log, $q) {
+	    var self = this;
+
+	    self.selected = null;
+	    self.users = [];
+	    //self.selectUser = selectUser;
+	    self.toggleList = toggleUsersList;
+	    self.showContactOptions = showContactOptions;
+
+
+	    MessagingService.registerUserSelListener(userSelected);
+
+	    userService
+	        .loadAllUsers()
+	        .then(function (users) {
+	            self.users = [].concat(users);
+	            self.selected = users[0];
+	        });
+
+	    function userSelected(user){
+	        self.selected = user;
+	    }
+
+	    function toggleUsersList() {
+	        var pending = $mdBottomSheet.hide() || $q.when(true);
+
+	        pending.then(function(){
+	            $mdSidenav('left').toggle();
+	        });
 	    }
 
 	    function showContactOptions($event) {
@@ -46679,7 +46806,7 @@
 
 	        return $mdBottomSheet.show({
 	            parent: angular.element(document.getElementById('content')),
-	            templateUrl: './controllers/users/contactSheet.html',
+	            template: __webpack_require__(24),
 	            controller: [ '$mdBottomSheet', ContactPanelController],
 	            controllerAs: "cp",
 	            bindToController : true,
@@ -46704,8 +46831,21 @@
 
 	}
 
-	module.exports = UserController;
+	module.exports = mainContentCtrl;
 
+
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = "<md-bottom-sheet class=\"md-list md-has-header\">\n\n    <md-subheader>\n        Contact <span class=\"name\">{{ cp.user.name }}</span>:\n    </md-subheader>\n\n    <md-list>\n        <md-item ng-repeat=\"item in cp.actions\">\n            <md-button ng-click=\"cp.submitContact(item)\" id=\"item_{{$index}}\">\n                <md-icon md-svg-icon=\"{{ item.icon_url }}\"></md-icon>\n                {{item.name}}\n            </md-button>\n        </md-item>\n    </md-list>\n\n</md-bottom-sheet>\n"
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = "<md-toolbar layout=\"row\" class=\"md-whiteframe-z1\">\n    <md-button class=\"menu\" hide-gt-sm ng-click=\"mainContentCtrl.toggleList()\" aria-label=\"Show User List\">\n        <md-icon md-svg-icon=\"menu\"></md-icon>\n    </md-button>\n    <h1>Angular Material - Starter App</h1>\n</md-toolbar>\n<md-content flex id=\"content\">\n    <md-icon md-svg-icon=\"{{mainContentCtrl.selected.avatar}}\" class=\"avatar\"></md-icon>\n    <h2>{{mainContentCtrl.selected.name}}</h2>\n    <p>{{mainContentCtrl.selected.content}}</p>\n\n    <md-button class=\"contact\" md-no-ink ng-click=\"mainContentCtrl.showContactOptions($event)\" aria-label=\"Contact User\" style=\"width: 250px\">\n        <md-tootip>Contact {{mainContentCtrl.selected.name}}</md-tootip>\n        <md-icon md-svg-icon=\"share\"></md-icon>\n    </md-button>\n\n</md-content>\n"
 
 /***/ }
 /******/ ]);
