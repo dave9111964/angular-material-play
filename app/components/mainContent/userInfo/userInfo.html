@@ -1,0 +1,46 @@
+<md-toolbar layout="row" class="md-whiteframe-z1">
+    <md-button class="menu" hide-gt-sm ng-click="" aria-label="Show User List">
+        <md-icon md-svg-icon="menu"></md-icon>
+    </md-button>
+    <h1>User Information</h1>
+</md-toolbar>
+<md-content flex>
+    <md-icon md-svg-icon="{{userInfoCtrl.selected.avatar}}" class="avatar"></md-icon>
+    <h2>{{userInfoCtrl.selected.name}}</h2>
+
+    <md-switch ng-model="userInfoCtrl.selected.likesWine" aria-label="Likes Wine">
+        Likes Wine: {{ userInfoCtrl.selected.likesWine }}
+    </md-switch>
+    <md-switch ng-model="userInfoCtrl.selected.likesBeer" aria-label="Likes Beer">
+        Likes Beer: {{ userInfoCtrl.selected.likesBeer }}
+    </md-switch>
+    <md-switch ng-model="userInfoCtrl.selected.likesVodka" aria-label="Likes Vodka">
+        Likes Vodka: {{ userInfoCtrl.selected.likesVodka }}
+    </md-switch>
+    <md-switch ng-model="userInfoCtrl.selected.likesRum" aria-label="Likes Rum">
+        Likes Rum: {{ userInfoCtrl.selected.likesRum }}
+    </md-switch>
+    <md-switch ng-model="userInfoCtrl.selected.likesTequila" aria-label="Likes Tequila">
+        Likes Tequila: {{ userInfoCtrl.selected.likesTequila }}
+    </md-switch>
+    <md-switch ng-model="userInfoCtrl.selected.likesWhiskey" aria-label="Likes Whiskey">
+        Likes Whiskey: {{ userInfoCtrl.selected.likesWhiskey }}
+    </md-switch>
+
+    <span style="width: 40%; float: left">
+        <h2 class="md-title">Also Likes:</h2>
+        <md-chips ng-model="userInfoCtrl.selected.alsoLikes" readonly="false">
+            <md-chip-template>
+                <strong>{{$chip}}</strong>
+            </md-chip-template>
+        </md-chips>
+    </span>
+
+    <h2 class="md-title" style="width: 40%; float: right">About {{userInfoCtrl.selected.name}}</h2>
+    <p style="width: 40%; float: right">{{userInfoCtrl.selected.content}}</p>
+
+    <md-button class="contact" md-no-ink ng-click="userInfoCtrl.backToMainContent()" aria-label="Back to main content" style="width: 250px">
+        <md-tootip>Back to main content</md-tootip>
+        <md-icon md-svg-icon="amMain:reply"></md-icon>
+    </md-button>
+</md-content>

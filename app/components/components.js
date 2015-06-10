@@ -4,5 +4,6 @@
 
 module.exports = angular.module('starterApp.components', [])
     .directive('amSideNav', require('./sideNav/sideNav'))
-    .directive('amMainContent', require('./mainContent/mainContent'));
+    .directive('amMainContent', require('./mainContent/mainContent'))
+    .directive('amUserInfo', require('./mainContent/userInfo/userInfo'));
 

@@ -10,6 +10,7 @@ var vendors = function(){
     require('../node_modules/angular-animate');
     require('../node_modules/angular-aria');
     require('../node_modules/angular-material');
+    require('../node_modules/angular-ui-router');
 };
 
 module.exports = vendors;

@@ -4,7 +4,7 @@
 
 'use strict';
 
-function mainContentCtrl(userService, MessagingService, $mdSidenav, $mdBottomSheet, $log, $q) {
+function mainContentCtrl(userService, MessagingService, $mdSidenav, $mdBottomSheet, $log, $q, $state) {
     var self = this;
 
     self.selected = null;
@@ -12,6 +12,7 @@ function mainContentCtrl(userService, MessagingService, $mdSidenav, $mdBottomShe
     //self.selectUser = selectUser;
     self.toggleList = toggleUsersList;
     self.showContactOptions = showContactOptions;
+    self.showUserInfo = showUserInfo;
 
 
     MessagingService.registerUserSelListener(userSelected);
@@ -20,7 +21,12 @@ function mainContentCtrl(userService, MessagingService, $mdSidenav, $mdBottomShe
         .loadAllUsers()
         .then(function (users) {
             self.users = [].concat(users);
-            self.selected = users[0];
+            if(MessagingService.getSelectedUser()){
+                self.selected = MessagingService.getSelectedUser();
+            }else {
+                self.selected = users[0];
+                MessagingService.setSelectedUser(self.selected);
+            }
         });
 
     function userSelected(user){
@@ -33,6 +39,10 @@ function mainContentCtrl(userService, MessagingService, $mdSidenav, $mdBottomShe
         pending.then(function(){
             $mdSidenav('left').toggle();
         });
+    }
+
+    function showUserInfo(){
+        $state.go('userInfo');
     }
 
     function showContactOptions($event) {

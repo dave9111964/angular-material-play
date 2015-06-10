@@ -6,6 +6,7 @@
 
 function MessageingService(){
     var userSelectedListeners = [];
+    var selectedUser = null;
 
     return {
         registerUserSelListener: function(funcToListen){
@@ -13,9 +14,24 @@ function MessageingService(){
         },
 
         dispatchUserSelected: function(user) {
+            selectedUser = user;
             userSelectedListeners.forEach(function (val) {
                 val(user);
             });
+        },
+
+        getSelectedUser: function(){
+            if(selectedUser){
+                return selectedUser;
+            }else{
+                return false;
+            }
+        },
+
+        setSelectedUser: function(user){
+            if(user){
+                selectedUser = user;
+            }
         }
     };
 

@@ -21,7 +21,10 @@
     "angular-aria": "^1.4.x",
     "bootstrap": "^3.3.4",
     "bootstrap-webpack": "^0.0.3",
-    "angular-material": "^0.9.7"
+    "angular-material": "^0.9.7",
+    "angular-ui-router": "^0.2.12",
+    "firebase": "^2.2.4",
+    "angularfire": "^1.1.1"
   },
   "devDependencies": {
     "css-loader": "^0.10.1",
